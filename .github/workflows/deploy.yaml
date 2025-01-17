@@ -26,8 +26,6 @@ jobs:
       - name: Generate deployment package
         run: zip -r deploy.zip . -x '*.git*'
 
-      # tell ELB to update the latest images
-
       - name: Deploy to EB
         uses: aws-actions/aws-elastic-beanstalk-deploy
         with:
@@ -35,7 +33,6 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_KEY }}
           application_name: multi-gh
           environment_name: Multigh-env
-          # existing_bucket_name: elasticbeanstalk-us-east-1-923445559289
           region: us-east-1
           version_label: ${{ github.sha }}
           deployment_package: deploy.zip
