@@ -2,7 +2,7 @@ name: Deploy MultiDocker
 on:
   push:
     branches:
-      - master # check your repo, your default branch might be master!
+      - master
 
 jobs:
   build:
@@ -22,3 +22,20 @@ jobs:
       - run: docker push harisharaju1/multi-nginx
       - run: docker push harisharaju1/multi-server
       - run: docker push harisharaju1/multi-worker
+
+      - name: Generate deployment package
+        run: zip -r deploy.zip . -x '*.git*'
+
+      # tell ELB to update the latest images
+
+      - name: Deploy to EB
+        uses: aws-actions/aws-elastic-beanstalk-deploy
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_KEY }}
+          application_name: multi-gh
+          environment_name: Multigh-env
+          # existing_bucket_name: elasticbeanstalk-us-east-1-923445559289
+          region: us-east-1
+          version_label: ${{ github.sha }}
+          deployment_package: deploy.zip

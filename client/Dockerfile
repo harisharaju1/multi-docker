@@ -14,7 +14,7 @@ RUN npm run build
 
 # 2nd section
 FROM nginx
-EXPOSE 80
+EXPOSE 3000
 
 COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 
